@@ -204,12 +204,12 @@ compileDom :: ArgName -> Dom Type -> C CompiledDom
 compileDom x a
   | usableModality a = case getHiding a of
       Instance{} -> DomConstraint . Hs.TypeA () <$> compileType (unEl $ unDom a)
-      NotHidden  -> uncurry DomType <$> compileType' (unEl $ unDom a)
-      Hidden     ->
+      NotHidden -> uncurry DomType <$> compileType' (unEl $ unDom a)
+      Hidden ->
         ifM (canErase $ unDom a)
             (return DomDropped)
-            (genericDocError =<< do text "Implicit type argument not supported: " <+> prettyTCM x)
-  | otherwise    = return DomDropped
+            (uncurry DomType <$> compileType' (unEl $ unDom a))
+  | otherwise = return DomDropped
 
 compileTeleBinds :: Telescope -> C [Hs.TyVarBind ()]
 compileTeleBinds tel =
@@ -220,7 +220,7 @@ compileTeleBinds tel =
     (uncurry compileKeptTeleBind)
   where
     checkArgDom (argName, argDom) | keepArg argName = Just (argName, argDom)
-    checkArgDom _ | otherwise = Nothing
+    checkArgDom _ = Nothing
 
     unArgDom (argName, argDom) = (hsName . unArg $ argName, unDom argDom)
 
@@ -228,8 +228,8 @@ compileKeptTeleBind :: Hs.Name () -> Type -> C (Hs.TyVarBind ())
 compileKeptTeleBind x t = do
   checkValidTyVarName x
   case compileKind t of
-    Just k              -> pure $ Hs.UnkindedVar () x -- In the future we may want to show kind annotations
-    _                   -> genericDocError =<<
+    Just k -> pure $ Hs.UnkindedVar () x -- In the future we may want to show kind annotations
+    _      -> genericDocError =<<
       text "Kind of bound argument not supported:"
       <+> parens (text (Hs.prettyPrint x) <> text " : " <> prettyTCM t)
 
@@ -237,6 +237,6 @@ compileKind :: Type -> Maybe (Hs.Kind ())
 compileKind t = case unEl t of
   Sort (Type _) -> pure (Hs.TyStar ())
   Pi a b
-    | keepArg a    -> Hs.TyFun () <$> compileKind (unDom a) <*> compileKind (unAbs b)
-    | otherwise    -> compileKind (unAbs b)
+    | keepArg a -> Hs.TyFun () <$> compileKind (unDom a) <*> compileKind (unAbs b)
+    | otherwise -> compileKind (unAbs b)
   _ -> Nothing     -- ^ if the argument is erased, we only compile the rest

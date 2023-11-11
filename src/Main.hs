@@ -27,7 +27,6 @@ defaultOptions = Options
   , optConfigFile = Nothing
   , optExtensions = []
   , optPrelude = PreludeOpts False Nothing []
-    -- by default the Prelude is imported explicitly
   , optRewrites = defaultSpecialRules
   }
 
@@ -42,8 +41,6 @@ configOpt src opts = return opts{optConfigFile = Just src}
 
 extensionOpt :: Monad m => String -> Options -> m Options
 extensionOpt ext opts = return opts{ optExtensions = Hs.parseExtension ext : optExtensions opts }
-
--- | Update options by reading the config, if any was specified.
 
 backend :: Backend' Options Options ModuleEnv ModuleRes (CompiledDef, CompileOutput)
 backend = Backend'

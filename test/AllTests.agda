@@ -53,6 +53,7 @@ import Deriving
 import ErasedLocalDefinitions
 import TypeOperators
 import ErasedTypeArguments
+import ErasedRecordParameter
 import TypeOperatorExport
 import TypeOperatorImport
 import IOFile
@@ -115,6 +116,7 @@ import Deriving
 import ErasedLocalDefinitions
 import TypeOperators
 import ErasedTypeArguments
+import ErasedRecordParameter
 import TypeOperatorExport
 import TypeOperatorImport
 import IOFile

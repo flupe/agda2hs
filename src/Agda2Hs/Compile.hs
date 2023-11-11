@@ -23,7 +23,6 @@ import Agda2Hs.Compile.Types
 import Agda2Hs.Compile.Utils ( setCurrentRangeQ, tellExtension )
 import Agda2Hs.Pragma
 
--- Needs a list of rewrite rules too.
 initCompileEnv :: TopLevelModuleName -> SpecialRules -> CompileEnv
 initCompileEnv tlm rewrites = CompileEnv
   { currModule = tlm

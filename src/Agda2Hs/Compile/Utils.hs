@@ -63,7 +63,7 @@ setCurrentRangeQ = setCurrentRange . nameBindingSite . qnameName
 isInScopeUnqualified :: QName -> C Bool
 isInScopeUnqualified x = lift $ do
   ys <- inverseScopeLookupName' AmbiguousAnything x <$> getScope
-  return $ any (not . C.isQualified) ys
+  return $ not (all C.isQualified ys)
 
 freshString :: String -> C String
 freshString s = liftTCM $ do
@@ -74,7 +74,7 @@ freshString s = liftTCM $ do
     dummyName s = C.QName $ C.Name noRange C.NotInScope $ singleton $ C.Id s
     isFresh scope ctxNames s =
       null (scopeLookup (dummyName s) scope :: [AbstractName]) &&
-      not (s `elem` ctxNames)
+      notElem s ctxNames
 
 makeList :: C Doc -> Term -> C [Term]
 makeList = makeList' "Agda.Builtin.List.List.[]" "Agda.Builtin.List.List._∷_"

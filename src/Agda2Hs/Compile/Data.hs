@@ -34,7 +34,7 @@ compileData target ds def = do
     Datatype{dataPars = n, dataIxs = numIxs, dataCons = cs} -> do
       TelV tel t <- telViewUpTo n (defType def)
       reportSDoc "agda2hs.data" 10 $ text "Datatype telescope:" <+> prettyTCM tel
-      allIndicesErased t
+      checkIndicesErased t
       let params = teleArgs tel
       addContext tel $ do
         binds <- compileTeleBinds tel
@@ -48,10 +48,10 @@ compileData target ds def = do
             return [Hs.DataDecl () (Hs.NewType ()) Nothing hd cs ds]
     _ -> __IMPOSSIBLE__
   where
-    allIndicesErased :: Type -> C ()
-    allIndicesErased t = reduce (unEl t) >>= \case
+    checkIndicesErased :: Type -> C ()
+    checkIndicesErased t = reduce (unEl t) >>= \case
       Pi dom t -> compileDom (absName t) dom >>= \case
-        DomDropped      -> allIndicesErased (unAbs t)
+        DomDropped      -> checkIndicesErased (unAbs t)
         DomType{}       -> genericDocError =<< text "Not supported: indexed datatypes"
         DomConstraint{} -> genericDocError =<< text "Not supported: constraints in types"
       _ -> return ()
