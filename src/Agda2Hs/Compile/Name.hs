@@ -47,6 +47,7 @@ isSpecialCon = prettyShow >>> \case
     "Agda.Builtin.List.List.[]"  -> special Hs.ListCon
     "Agda.Builtin.Unit.⊤"        -> special Hs.UnitCon
     "Agda.Builtin.Unit.tt"       -> special Hs.UnitCon
+    "Haskell.Extra.Erase.Erased" -> special Hs.UnitCon
     _ -> Nothing
   where special c = Just (Hs.Special () $ c ())
 
@@ -61,17 +62,19 @@ toNameImport x (Just mod) =
 -- | Default rewrite rules.
 defaultSpecialRules :: SpecialRules
 defaultSpecialRules = Map.fromList
-  [ "Agda.Builtin.Nat.Nat"          `to` "Natural"      `importing` Just "Numeric.Natural"
-  , "Haskell.Control.Monad.guard"   `to` "guard"        `importing` Just "Control.Monad"
-  , "Haskell.Prelude.coerce"        `to` "unsafeCoerce" `importing` Just "Unsafe.Coerce"
-  , "Agda.Builtin.Int.Int"          `to` "Integer"      `importing` Nothing
-  , "Agda.Builtin.Word.Word64"      `to` "Word"         `importing` Nothing
-  , "Agda.Builtin.Float.Float"      `to` "Double"       `importing` Nothing
-  , "Agda.Builtin.Bool.Bool.false"  `to` "False"        `importing` Nothing
-  , "Agda.Builtin.Bool.Bool.true"   `to` "True"         `importing` Nothing
-  , "Haskell.Prim._∘_"              `to` "_._"          `importing` Nothing
-  , "Haskell.Prim.Monad.Dont._>>=_" `to` "_>>=_"        `importing` Nothing
-  , "Haskell.Prim.Monad.Dont._>>_"  `to` "_>>_"         `importing` Nothing
+  [ "Agda.Builtin.Nat.Nat"               `to` "Natural"      `importing` Just "Numeric.Natural"
+  , "Haskell.Control.Monad.guard"        `to` "guard"        `importing` Just "Control.Monad"
+  , "Haskell.Prelude.coerce"             `to` "unsafeCoerce" `importing` Just "Unsafe.Coerce"
+  , "Agda.Builtin.Int.Int"               `to` "Integer"      `importing` Nothing
+  , "Agda.Builtin.Word.Word64"           `to` "Word"         `importing` Nothing
+  , "Agda.Builtin.Float.Float"           `to` "Double"       `importing` Nothing
+  , "Agda.Builtin.Bool.Bool.false"       `to` "False"        `importing` Nothing
+  , "Agda.Builtin.Bool.Bool.true"        `to` "True"         `importing` Nothing
+  , "Haskell.Prim._∘_"                   `to` "_._"          `importing` Nothing
+  , "Haskell.Prim.Monad.Dont._>>=_"      `to` "_>>=_"        `importing` Nothing
+  , "Haskell.Prim.Monad.Dont._>>_"       `to` "_>>_"         `importing` Nothing
+  , "Haskell.Extra.Erase.Erase"          `to` "()"           `importing` Nothing
+  , "Haskell.Extra.Erase.rezzErase"      `to` "()"           `importing` Nothing
   ]
   where infixr 6 `to`, `importing`
         to = (,)
@@ -158,7 +161,7 @@ compileQName f
       (QualifiedAs as) -> Hs.Qual () (fromMaybe mod as) n
       Unqualified      -> Hs.UnQual () n
 
-    primModules = ["Agda.Builtin", "Haskell.Prim", "Haskell.Prelude"]
+    primModules = ["Agda.Builtin", "Haskell.Prim", "Haskell.Prelude", "Haskell.Extra.Erase"]
     primMonadModules = ["Haskell.Prim.Monad.Dont", "Haskell.Prim.Monad.Do"]
 
     -- Determine whether it is a type operator or an "ordinary" operator.
