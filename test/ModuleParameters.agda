@@ -2,7 +2,9 @@ open import Haskell.Prelude hiding (a)
 
 module ModuleParameters
   (@0 name : Set)
-  (p : @0 name → Set) where
+  (p       : @0 name → Set)
+  (x       : Integer)
+  where
 
 data Scope : Set where
   Empty : Scope
@@ -16,9 +18,9 @@ unbind (Bind _ _ s) = s
 
 module _ {a : Set} where
   thing : a → a
-  thing x = y
+  thing z = y
     where y : a
-          y = x
+          y = z
   {-# COMPILE AGDA2HS thing #-}
 
   stuff : a → Scope → a

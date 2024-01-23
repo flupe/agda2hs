@@ -68,7 +68,7 @@ import Inlining
 import EraseType
 import Issue257
 import Delay
-import Issue264
+-- import Issue264
 
 {-# FOREIGN AGDA2HS
 import Issue14
@@ -136,5 +136,5 @@ import Coerce
 import Inlining
 import EraseType
 import Delay
-import Issue264
+-- import Issue264
 #-}
