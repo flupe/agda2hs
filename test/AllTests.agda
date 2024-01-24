@@ -1,4 +1,4 @@
-
+{-# OPTIONS --prop #-}
 module AllTests where
 
 import Issue14
@@ -68,6 +68,7 @@ import Inlining
 import EraseType
 import Issue257
 import Delay
+import Prop
 
 {-# FOREIGN AGDA2HS
 import Issue14
@@ -135,4 +136,5 @@ import Coerce
 import Inlining
 import EraseType
 import Delay
+import Prop
 #-}
