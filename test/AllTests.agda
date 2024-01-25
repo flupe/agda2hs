@@ -61,8 +61,8 @@ import Issue200
 import Issue169
 import Issue210
 import TypeSignature
-import ModuleParameters
-import ModuleParametersImports
+-- import ModuleParameters
+-- import ModuleParametersImports
 import Coerce
 import Inlining
 import EraseType
@@ -130,8 +130,8 @@ import Issue200
 import Issue169
 import Issue210
 import TypeSignature
-import ModuleParameters
-import ModuleParametersImports
+-- import ModuleParameters
+-- import ModuleParametersImports
 import Coerce
 import Inlining
 import EraseType

@@ -113,12 +113,16 @@ underAbstr = underAbstraction' KeepNames
 underAbstr_ :: Subst a => Abs a -> (a -> C b) -> C b
 underAbstr_ = underAbstr __DUMMY_DOM__
 
--- Determine whether an argument should be kept or dropped.
+-- | Determine whether an argument should be kept or dropped.
 -- We drop all arguments that have quantity 0 (= run-time erased).
 -- We also drop hidden non-erased arguments (which should all be of
 -- type Level or Set l).
 keepArg :: (LensHiding a, LensModality a) => a -> Bool
 keepArg x = usableModality x && visible x
+
+
+keepClause :: Clause -> Bool
+keepClause = maybe False keepArg . clauseType
 
 -- Determine whether it is ok to erase arguments of this type,
 -- even in the absence of an erasure annotation.
@@ -299,9 +303,10 @@ checkFixityLevel name (Related lvl) =
 maybePrependFixity :: QName -> Fixity -> C [Hs.Decl ()] -> C [Hs.Decl ()]
 maybePrependFixity n f comp | f /= noFixity = do
   hsLvl <- checkFixityLevel n (fixityLevel f)
+  let x = hsName $ prettyShow $ qnameName n
   let hsAssoc = case fixityAssoc f of
         NonAssoc   -> Hs.AssocNone ()
         LeftAssoc  -> Hs.AssocLeft ()
         RightAssoc -> Hs.AssocRight ()
-  (Hs.InfixDecl () hsAssoc hsLvl [Hs.VarOp () (hsName $ prettyShow n)]:) <$> comp
+  (Hs.InfixDecl () hsAssoc hsLvl [Hs.VarOp () x]:) <$> comp
 maybePrependFixity n f comp = comp
