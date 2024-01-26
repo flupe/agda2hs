@@ -81,9 +81,9 @@ compileImports top is0 = do
      where
         isClashing (Import _ as' p' q' _) = (as' == as) && (p' /= p) && (q' == q)
         mkErrorMsg (Import _ _ p' q' _) =
-             "Clashing import: " ++ pp q ++ " (both from "
-          ++ prettyShow (pp <$> p) ++ " and "
-          ++ prettyShow (pp <$> p') ++ ")"
+             "Clashing import: " ++ ppS q ++ " (both from "
+          ++ prettyShow (ppS <$> p) ++ " and "
+          ++ prettyShow (ppS <$> p') ++ ")"
         -- TODO: no range information as we only have Haskell names at this point
 
 

@@ -80,8 +80,8 @@ compileMinRecords def sls = do
   let getUnique f (x :| xs)
         | all (x ==) xs = return x
         | otherwise     = genericDocError =<< do
-          text ("Conflicting default implementations for " ++ pp f ++ ":") $$
-            vcat [ text "-" <+> multilineText (pp d) | d <- nub (x : xs) ]
+          text ("Conflicting default implementations for " ++ ppS f ++ ":") $$
+            vcat [ text "-" <+> multilineText (ppS d) | d <- nub (x : xs) ]
   decls <- Map.traverseWithKey getUnique
          $ Map.unionsWith (<>) $ (map . fmap) (:| []) defaults
 

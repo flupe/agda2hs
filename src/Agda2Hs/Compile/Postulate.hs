@@ -12,6 +12,7 @@ import Agda2Hs.Compile.Types
 import Agda2Hs.Compile.Utils
 import Agda2Hs.HsUtils
 
+
 compilePostulate :: Definition -> C [Hs.Decl ()]
 compilePostulate def = do
   let n = qnameName (defName def)
@@ -19,6 +20,6 @@ compilePostulate def = do
   checkValidFunName x
   setCurrentRange (nameBindingSite n) $ do
     ty <- compileType (unEl $ defType def)
-    let body = hsError $ "postulate: " ++ pp ty
+    let body = hsError $ "postulate: " ++ ppS ty
     return [ Hs.TypeSig () [x] ty
            , Hs.FunBind () [Hs.Match () x [] (Hs.UnGuardedRhs () body) Nothing] ]

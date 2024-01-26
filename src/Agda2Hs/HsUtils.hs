@@ -8,6 +8,7 @@ import Data.Generics ( listify, everywhere, mkT, extT )
 import Data.List ( foldl' )
 import Data.Map ( Map )
 
+import qualified Data.Text.Lazy.Builder as Text (Builder, fromString)
 import qualified Data.Map as Map
 
 import Language.Haskell.Exts hiding ( Strict, Lazy )
@@ -119,12 +120,15 @@ dropPatterns n = everywhere (mkT go)
 
 -- Utilities for building Haskell constructs
 
-pp :: Pretty a => a -> String
-pp = prettyPrintWithMode defaultMode{ spacing = False
-                                    , classIndent = 4
-                                    , whereIndent = 2
-                                    }
+ppS :: Pretty a => a -> String
+ppS = prettyPrintWithMode
+  defaultMode { spacing     = False
+              , classIndent = 4
+              , whereIndent = 2
+              }
 
+pp :: Pretty a => a -> Text.Builder
+pp = Text.fromString . ppS
 
 -- exactPrint really looks at the line numbers (and we're using the locations from the agda source
 -- to report Haskell parse errors at the right location), so shift everything to start at line 1.
@@ -211,11 +215,11 @@ srcSpanInfoToRange = srcSpanToRange . srcInfoSpan
 allUsedTypes :: Data a => a -> [Type ()]
 allUsedTypes = listify (const True)
 
-usedTypesOf :: Data a => String -> a -> [Type ()]
-usedTypesOf s = listify $ (== s) . pp
+-- usedTypesOf :: Data a => String -> a -> [Type ()]
+-- usedTypesOf s = listify $ (== s) . pp
 
-uses :: Data a => String -> a -> Bool
-uses ty = not . null . usedTypesOf ty
+-- uses :: Data a => String -> a -> Bool
+-- uses ty = not . null . usedTypesOf ty
 
 -- Fixities
 

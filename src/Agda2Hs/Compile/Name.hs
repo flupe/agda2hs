@@ -128,8 +128,8 @@ compileQName f
       ++ "\nmod0: " ++ prettyShow mod0
       ++ "\nmodule name: " ++ Hs.prettyPrint mod
       ++ "\ncurrent module: " ++ Hs.prettyPrint currMod
-      ++ "\nqualifier: " ++ prettyShow (fmap (fmap pp) qual)
-      ++ "\n(qualified) haskell name: " ++ pp qf
+      ++ "\nqualifier: " ++ prettyShow (fmap (fmap ppS) qual)
+      ++ "\n(qualified) haskell name: " ++ ppS qf
     return qf
   where
     parentName :: QName -> C (Maybe QName)
@@ -180,7 +180,7 @@ compileQName f
 
     mkImport mod qual par hf maybeIsType
       -- make sure the Prelude is properly qualified
-      | any (`isPrefixOf` pp mod) primModules
+      | any (`isPrefixOf` ppS mod) primModules
       = if isQualified qual then
           let mod' = hsModuleName "Prelude"
           in (mod', Just (Import mod' qual Nothing hf maybeIsType))
@@ -199,5 +199,5 @@ compileModuleName m = do
   tlm <- liftTCM $ hsTopLevelModuleName <$> getTopLevelModuleForModuleName m
   reportSDoc "agda2hs.name" 25 $
     text "Top-level module name for" <+> prettyTCM m <+>
-    text "is" <+> text (pp tlm)
+    text "is" <+> text (ppS tlm)
   return tlm
